@@ -34,12 +34,7 @@ var arr=[];
 
         }
 
-      // if(jsonData[arr[4]]==undefined)
-      // jsonData[arr[4]]={};
-      //
-      //
-      //
-      // jsonData[arr[4]][arr[3].split(".")[1]]=arr[5];
+      
 
 
 

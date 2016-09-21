@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.axis--x path {
+
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<svg width="960" height="500"></svg>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = svg.attr("width") - margin.left - margin.right,
+    height = svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+var x = d3.scaleLinear().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]),
+    z = d3.scaleOrdinal(["#CC3F0C","#33673B"]);
+
+var line = d3.line()
+    .curve(d3.curveBasis)
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y(d.Population); });
+
+d3.json("dataindia.json", function(error, data) {
+  if (error) throw error;
+
+  var arr=Object.keys(data[0]).splice(1);
+  var type = arr.map(function(id) {
+    return {
+      id: id,
+      values: data.map(function(d) {
+        return {Year: d.Year, Population: d[id]};
+      })
+    };
+  });
+  console.log(type);
+
+
+
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+
+  y.domain([
+  0,
+    100
+  ]);
+
+  z.domain(type.map(function(c) { return c.id; }));
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .append("text")
+      .attr("x",width)
+      .attr("dx","0.71em")
+      .attr("fill","#000")
+      .text("Year");
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("fill", "#000")
+      .text("% Population");
+
+  var citytype = g.selectAll(".citytype")
+    .data(type)
+    .enter().append("g")
+      .attr("class", "citytype");
+
+  citytype.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return z(d.id); });
+
+  citytype.append("text")
+      .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.Population) + ")"; })
+      .attr("x", 3)
+      .attr("dy", "0.35em")
+      .style("font", "10px sans-serif")
+      .text(function(d) { return d.id; });
+
+      var legend = svg.append("g")
+      .attr("class", "legend")
+    .selectAll("g")
+      .data(type)
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(" + (width - 100) + "," + (i*20+20) + ")"; });
+
+  legend.append("rect")
+      .attr("width",10)
+      .attr("height",10)
+      .style("fill", function(d, i) { return z(i); })
+
+
+  legend.append("text")
+      .attr("dy", ".35em")
+      .attr("x", 26)
+      .text(function(d) { return d.id; });
+});
+
+function type(d) {
+d.Year= +d.Year;
+d.Rural= +d.Rural;
+d.Urban= +d.Urban;
+  return d;
+}
+
+</script>
