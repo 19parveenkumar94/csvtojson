@@ -46,7 +46,6 @@ d3.json("dataindia.json", function(error, data) {
       })
     };
   });
-  console.log(type);
 
 
 
@@ -78,6 +77,13 @@ d3.json("dataindia.json", function(error, data) {
       .attr("dy", "0.71em")
       .attr("fill", "#000")
       .text("% Population");
+svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("India Urban vs Rural population 1960-2014");
 
   var citytype = g.selectAll(".citytype")
     .data(type)

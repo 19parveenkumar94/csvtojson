@@ -1,3 +1,4 @@
+
 var fs=require('fs');
 var readline=require('readline');
 var rd= readline.createInterface({
@@ -27,7 +28,7 @@ if(isheader)
   header=line.trim().split(",");
 }
 else {
-
+//todo making static to dymnaic indexing
 var linewithout= line.replace(/"[^"]+"/g, function (match) {return match.replace(/,/g, '');});
 
   arr=linewithout.trim().split(",");
