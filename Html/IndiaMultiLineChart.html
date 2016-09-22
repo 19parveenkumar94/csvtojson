@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.axis--x path {
+
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<svg width="960" height="500"></svg>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+//appending svg
+var svg = d3.select("svg"),
+    margin = {top: 100, right: 80, bottom: 30, left: 50},
+    width = svg.attr("width") - margin.left - margin.right,
+    height = svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//setting range and scale
+var x = d3.scaleLinear().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]),
+    z = d3.scaleOrdinal(["#CC3F0C","#33673B"]);
+//calling line function to set the paths
+var line = d3.line()
+    .curve(d3.curveBasis)
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y(d.Population); })
+    ;
+//getting json data
+//todo change the json to avoid parsing in this function
+d3.json("dataIndia.json", function(error, data) {
+  if (error) throw error;
+
+  var arr=Object.keys(data[0]).splice(1);
+  var type = arr.map(function(id) {
+    return {
+      id: id,
+      values: data.map(function(d) {
+        return {Year: d.Year, Population: d[id]};
+      })
+    };
+  });
+
+
+//setting domains
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+
+  y.domain([0,100]);
+
+  z.domain(type.map(function(c) { return c.id; }));
+
+//appending x-axis
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .append("text")
+      .attr("x",width)
+      .attr("dx","0.71em")
+      .attr("fill","#000")
+      .text("Year");
+
+//appending y-axis
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("fill", "#000")
+      .text("% Population");
+
+//getting path attribute d for each line
+  var citytype = g.selectAll(".citytype")
+    .data(type)
+    .enter().append("g")
+      .attr("class", "citytype");
+
+  citytype.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) {return line(d.values); })
+      .style("stroke", function(d) { return z(d.id); })
+      .on("mouseover",function(){tooltip.style("display",null);})
+      .on("mouseout",function(){tooltip.style("display","none");})
+      .on("mousemove",function(d){
+        var x=d3.mouse(this)[0]-15;
+        var y=d3.mouse(this)[1]-25;
+        tooltip.attr("transform","translate("+x+","+y+")");
+        //tooltip.select("text").text(d.values.this.map(function(d){return d.Population}));
+      });;
+
+  citytype.append("text")
+      .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.Population) + ")"; })
+      .attr("x", 3)
+      .attr("dy", "0.35em")
+      .style("font", "10px sans-serif")
+      .text(function(d) { return d.id; });
+
+//appending legend
+      var legend = svg.append("g")
+      .attr("class", "legend")
+      .selectAll("g")
+      .data(type)
+      .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(" + (width - 100) + "," + (i*20+20) + ")"; });
+
+  legend.append("rect")
+      .attr("width",10)
+      .attr("height",10)
+      .style("fill", function(d, i) { return z(i); })
+
+
+  legend.append("text")
+      .attr("dy", ".35em")
+      .attr("x", 26)
+      .text(function(d) { return d.id; });
+
+      //appending tooltip
+      var tooltip = svg.append("g")
+        .attr("class", "tooltip")
+        .style("display", "none");
+
+      tooltip.append("rect")
+        .attr("width", 50)
+        .attr("height", 20)
+        .attr("fill", "white")
+        .style("opacity", 0.5);
+
+      tooltip.append("text")
+        .attr("x", 15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "right")
+        .attr("font-size", "12px")
+        .attr("font-weight", "bold");
+
+});
+
+svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 20)
+        .attr("color","blue")
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("India Urban vs Rural population 1960-2014");
+
+
+</script>
