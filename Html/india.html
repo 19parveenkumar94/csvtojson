@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+
+.axis--x path {
+
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#homeTab">Home</a></li>
+    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id = "homeTab">
+      <svg width="960" height="500" id="home" ></svg>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+      </div>
+
+      <script src="//d3js.org/d3.v4.min.js"></script>
+      <script>
+      //appending svg
+      var svg = d3.select("#home");
+
+          margin = {top: 100, right: 80, bottom: 30, left: 50},
+          width = svg.attr("width") - margin.left - margin.right,
+          height = svg.attr("height") - margin.top - margin.bottom,
+          g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //setting range and scale
+      var x = d3.scaleTime().range([0, width]),
+          y = d3.scaleLinear().range([height, 0]),
+          z = d3.scaleOrdinal(["#CC3F0C","#33673B"]);
+      //calling line function to set the paths
+      var line = d3.line()
+          .curve(d3.curveBasis)
+          .x(function(d) { return x(d.Year); })
+          .y(function(d) { return y(d.Value); })
+          ;
+      //getting json data
+      //todo change the json to avoid parsing in this function
+      d3.json("dataNewIndia.json", function(error, data) {
+        if (error) throw error;
+
+      var type=getType(data);
+
+      var parse=d3.timeFormat("%Y")
+
+      console.log(type);
+
+      //setting domains
+        x.domain([d3.min(type[0].values, function(d) { return d.Year; }),d3.max(type[0].values,function(d){return d.Year})]);
+        console.log(x.domain());
+
+        y.domain([0,100]);
+
+        z.domain(type.map(function(c) { return c.id; }));
+
+      //appending x-axis
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .append("text")
+            .attr("x",width)
+            .attr("dx","0.71em")
+            .attr("fill","#000")
+            .text("Year");
+
+      //appending y-axis
+        g.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(y))
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", "0.71em")
+            .attr("fill", "#000")
+            .text("% Population");
+
+      //getting path attribute d for each line
+        var citytype = g.selectAll(".citytype")
+          .data(type)
+          .enter().append("g")
+            .attr("class", "citytype");
+
+        citytype.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) {return line(d.values); })
+            .style("stroke", function(d) { return z(d.id); })
+            .on("mouseover",function(){tooltip.style("display",null);})
+            .on("mouseout",function(){tooltip.style("display","none");})
+            .on("mousemove",function(d){
+              var x=d3.mouse(this)[0]-15;
+              var y=d3.mouse(this)[1]-25;
+              tooltip.attr("transform","translate("+x+","+y+")");
+              //tooltip.select("text").text(d.values.this.map(function(d){return d.Population}));
+            });;
+
+        citytype.append("text")
+            .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+            .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.Value) + ")"; })
+            .attr("x", 3)
+            .attr("dy", "0.35em")
+            .style("font", "10px sans-serif")
+            .text(function(d) { return d.id; });
+
+      //appending legend
+            var legend = svg.append("g")
+            .attr("class", "legend")
+            .selectAll("g")
+            .data(type)
+            .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(" + (width - 100) + "," + (i*20+20) + ")"; });
+
+        legend.append("rect")
+            .attr("width",10)
+            .attr("height",10)
+            .style("fill", function(d, i) { return z(i); })
+
+
+        legend.append("text")
+            .attr("dy", ".35em")
+            .attr("x", 26)
+            .text(function(d) { return d.id; });
+
+            //appending tooltip
+            var tooltip = svg.append("g")
+              .attr("class", "tooltip")
+              .style("display", "none");
+
+            tooltip.append("rect")
+              .attr("width", 50)
+              .attr("height", 20)
+              .attr("fill", "white")
+              .style("opacity", 0.5);
+
+            tooltip.append("text")
+              .attr("x", 15)
+              .attr("dy", "1.2em")
+              .style("text-anchor", "right")
+              .attr("font-size", "12px")
+              .attr("font-weight", "bold");
+
+      });
+
+      svg.append("text")
+              .attr("x", (width / 2))
+              .attr("y", 20)
+              .attr("color","blue")
+              .attr("text-anchor", "middle")
+              .style("font-size", "16px")
+              .style("text-decoration", "underline")
+              .text("India Urban vs Rural population 1960-2014");
+
+              function getType(data)
+              {
+                var type=[];
+                var count=0;
+                for(var prop in data)
+                {
+                  var obj={};
+                  obj["id"]=Object.keys(data)[count];
+
+                  obj["values"]=data[Object.keys(data)[count]];
+                  type.push(obj);
+                  count++;
+                }
+                return type;
+              }
+
+      </script>
+  </body>

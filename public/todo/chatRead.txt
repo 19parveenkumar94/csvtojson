@@ -5,3 +5,5 @@ socket.io
 http
 methods
 index.html css js
+bootstrap
+modernizr

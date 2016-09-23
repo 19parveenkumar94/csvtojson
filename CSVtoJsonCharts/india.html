@@ -24,33 +24,29 @@ var svg = d3.select("svg"),
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 //setting range and scale
-var x = d3.scaleLinear().range([0, width]),
+var x = d3.scaleTime().range([0, width]),
     y = d3.scaleLinear().range([height, 0]),
     z = d3.scaleOrdinal(["#CC3F0C","#33673B"]);
 //calling line function to set the paths
 var line = d3.line()
     .curve(d3.curveBasis)
     .x(function(d) { return x(d.Year); })
-    .y(function(d) { return y(d.Population); })
+    .y(function(d) { return y(d.Value); })
     ;
 //getting json data
 //todo change the json to avoid parsing in this function
-d3.json("dataIndia.json", function(error, data) {
+d3.json("dataNewIndia.json", function(error, data) {
   if (error) throw error;
 
-  var arr=Object.keys(data[0]).splice(1);
-  var type = arr.map(function(id) {
-    return {
-      id: id,
-      values: data.map(function(d) {
-        return {Year: d.Year, Population: d[id]};
-      })
-    };
-  });
+var type=getType(data);
+
+var parse=d3.timeFormat("%Y")
 
 console.log(type);
+
 //setting domains
-  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  x.domain([d3.min(type[0].values, function(d) { return d.Year; }),d3.max(type[0].values,function(d){return d.Year})]);
+  console.log(x.domain());
 
   y.domain([0,100]);
 
@@ -99,7 +95,7 @@ console.log(type);
 
   citytype.append("text")
       .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.Population) + ")"; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.Value) + ")"; })
       .attr("x", 3)
       .attr("dy", "0.35em")
       .style("font", "10px sans-serif")
@@ -153,5 +149,41 @@ svg.append("text")
         .style("text-decoration", "underline")
         .text("India Urban vs Rural population 1960-2014");
 
+        function getType(data)
+        {
+          var type=[];
+          var count=0;
+          for(var prop in data)
+          {
+            var obj={};
+            obj["id"]=Object.keys(data)[count];
+
+            obj["values"]=data[Object.keys(data)[count]];
+            type.push(obj);
+            count++;
+          }
+          return type;
+        }
 
 </script>
+<body>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+
+    </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+
+  </div>
+
+
+</body>
