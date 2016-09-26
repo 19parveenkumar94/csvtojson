@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis--x path {
+  display: none;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var code = ["rural", "urban"];
+
+var margin = {top: 20, right: 50, bottom: 150, left: 50},
+    width = 1000 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+var count=1;
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width]);
+
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
+
+var z = d3.scale.category10();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickPadding(10)
+    .tickFormat(function(d){return count++});
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + 2*margin.left + "," + margin.top + ")");
+svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Asian Countries population Graph");
+d3.json("dataasiasum.json", function(error, data) {
+  if (error) throw error;
+code=Object.keys(data);
+
+  var layers = d3.layout.stack()(code.map(function(c) {
+    console.log(getAray(data[c]));
+  }));
+//console.log(layers);
+
+
+  x.domain(layers[0].map(function(d) { return d.x; }));
+  y.domain([1, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })]).nice();
+
+  var layer = svg.selectAll(".layer")
+      .data(layers)
+      .enter().append("g")
+      .attr("class", "layer")
+      .style("fill", function(d, i) { return z(i); });
+
+
+  layer.selectAll("rect")
+      .data(function(d) { return d; })
+      .enter().append("rect")
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y + d.y0); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y + d.y0); })
+      .attr("width", x.rangeBand() - 1)
+      .on("mouseover",function(){tooltip.style("display",null);})
+      .on("mouseout",function(){tooltip.style("display","none");})
+      .on("mousemove",function(d){
+        var x=d3.mouse(this)[0]-15;
+        var y=d3.mouse(this)[1]-25;
+        tooltip.attr("transform","translate("+x+","+y+")");
+        tooltip.select("text").text(parseInt(parseFloat(d.y)/10000));
+      });
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end");
+
+      var legend = svg.append("g")
+      .attr("class", "legend")
+    .selectAll("g")
+      .data(code)
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(" + (width - 100) + "," + (i * 20) + ")"; });
+
+  legend.append("rect")
+      .attr("width",10)
+      .attr("height",10)
+      .style("fill", function(d, i) { return z(i); })
+
+
+  legend.append("text")
+      .attr("dy", ".35em")
+      .attr("x", 26)
+      .text(function(d) { return d; });
+
+var tooltip = svg.append("g")
+  .attr("class", "tooltip")
+  .style("display", "none");
+
+tooltip.append("rect")
+  .attr("width", 50)
+  .attr("height", 20)
+  .attr("fill", "white")
+  .style("opacity", 0.5);
+
+tooltip.append("text")
+  .attr("x", 15)
+  .attr("dy", "1.2em")
+  .style("text-anchor", "right")
+  .attr("font-size", "12px")
+  .attr("font-weight", "bold");
+});
+function getAray(data)
+{
+
+keysSorted = Object.keys(data).sort(function(a,b){return data[b]-data[a]});
+  // var x=[];
+  // for(var  temp in data)
+  // {
+  //   x.push([temp],data[temp]);
+  //
+  // }
+  //
+  // x.sort(
+  //   function(a,b)
+  //   {
+  //     return b[1]-a[1];
+  //   }
+  // )
+}
+</script>
