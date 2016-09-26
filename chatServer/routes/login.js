@@ -48,11 +48,6 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/chat');
 });
 
-router.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-});
-
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });

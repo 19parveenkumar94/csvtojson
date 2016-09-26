@@ -41,17 +41,21 @@ app.use(function(req,res,next){
     req.db = db;
     next();
 });
-//app.use('/', routes);
-app.use('/',login);
+app.use('/', routes);
+//app.use('/',login);
 app.use('/users', users);
 
-var Account = require('./models/account');
-passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
 
-mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
+// passport.use(new LocalStrategy(Account.authenticate()));
+// passport.serializeUser(Account.serializeUser());
+// passport.deserializeUser(Account.deserializeUser());
 
+mongoose.connect('mongodb://localhost/users');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("you are connectes to mongoose");
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

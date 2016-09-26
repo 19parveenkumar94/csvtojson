@@ -17,22 +17,38 @@
 
   </head>
   <body>
+
+      Enter your name:<input type="text" style="width:50%; background-color=white;" id="name" ><p id="peoples"></p>
     <ul id="messages"></ul>
     <form action="">
+
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   var socket = io();
+  $('#name').blur(function(){
+    socket.emit('join',$('#name').val());
+
+  });
   $('form').submit(function(){
-    $('#messages').append($('<li class="appen">').text($('#m').val()));
-    socket.emit('chat message', $('#m').val());
+
+    //$('#messages').append($('<li class="appen">').text($('#m').val()));
+    socket.emit('chat_message', $('#m').val());
     $('#m').val('');
     return false;
   });
-  socket.on('chat message', function(msg){
-    $('#messages').append($('<li class="appended">').text(msg));
+  socket.on('peoples',function(users){
+    $('#peoples').text("");
+  for(var x in users)
+  {
+    $('#peoples').append(users[x]+" ");
+  }
+  $('#peoples').append(" are connected");
+  });
+  socket.on('chat-message', function(id,msg){
+    $('#messages').append($('<li class="appen">').text(id+" "+msg));
   });
 </script>
   </body>

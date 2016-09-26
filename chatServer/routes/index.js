@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var users = require('../models/user');
 /* GET home page. */
 // router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'Express' });
@@ -16,13 +16,54 @@ router.get('/userlist', function(req, res) {
 });
 router.get("/",function(req,res,next){
 
-  res.render('chatClient');
+  res.render('dummy');
 
 });
-router.get("/mogambo",function(req,res,next){
-  res.send("mogambo khush hua");
+router.get("/login",function(req,res,next){
+  res.render("loginActual");
 
 });
+router.get("/register",function(req,res,next){
+  res.render("register");
+
+});
+router.get("/checkLogin",function(req,res,next){
+  res.render("selectUsers");
+});
+// router.post("/checkLogin",function(req,res,next){
+//   //console.log('name'+req.body.username+' password'+ req.body.password);
+//
+//   users.findOne({ username: req.body.username,password: req.body.password},function (err, users) {
+//      if ((users==null)||(err)) {
+//        res.redirect('/login');
+//      }
+//
+//      res.render("dummy");
+//    });
+//
+// });
+router.post("/registerUser",function(req,res,next){
+var login=new users({username:req.body.username,password:req.body.password,email:req.body.email});
+users.findOne({email:req.body.email},function(err,users){
+  if(users)
+  {
+    res.redirect('/register');
+  }
+  else{
+    login.save(function(err){
+    if(err)
+    return console.error(err);
+    res.redirect("/login");
+
+    });
+
+  }
+
+});
+
+});
+
+
 router.get('/users/:userId/books/:bookId', function(req, res) {
   res.send(req.params);
 });

@@ -1,0 +1,315 @@
+<head>
+
+<style>
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+img.avatar {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+#chatBox{
+  display:none;
+}
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+.jumbotron{
+  height:100px;
+  background-color: #885053;
+  text-align: center;
+}
+li{
+  background-color: red;
+  color:white;
+}
+#outer{
+  display: none;
+}
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
+}
+</style>
+<body>
+
+<div id="outer">
+  <div class="jumbotron">
+    <h1>Welcome To The Colaba</h1>
+  </div>
+  <button type="button" class="btn btn-info btn-lg" id="showModal" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">select a user to chat</h4>
+        </div>
+        <div class="modal-body">
+          <ul id="usersOnline">
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="id01" class="modal">
+
+  <form class="modal-content animate" action="/checkLogin" method="post">
+
+    <div class="container">
+      <label><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="username" id="username" required>
+
+      <label><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="password" id="password" required>
+
+      <button type="submit">Login</button>
+      <input type="checkbox" checked="checked"> Remember me
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+    <span>new user? <a href="/register">Register</a></span>
+      <span class="psw">Forgot <a href="#">password?</a></span>
+    </div>
+  </form>
+</div>
+<div id="requestModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <button id="accept">accept</button>
+        <button id="reject">reject</button>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="chatBox">
+  <ul id="messages"></ul>
+    <form action="" id="chatForm">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+<script>
+// Get the modal
+var socket = io();
+var modal = document.getElementById('id01');
+var n;
+var user
+var reciever;
+var Sender;
+// When the user clicks anywhere outside of the modal, close it
+window.onload = function() {
+    document.getElementById('id01').style.display='block'
+}
+$("#showModal").click(function(){
+  $("#myModal").show();
+
+});
+socket.on('senderMsg',function(sender,msg){
+  $('#messages').append($('<li>').text(sender+":  "+msg));
+});
+socket.on('sendToReciever',function(sender,msg){
+  Sender=sender;
+   $('#messages').append($('<li>').text(sender+":  "+msg));
+});
+$("#chatForm").submit(function(e){
+  alert("hello");
+  e.preventDefault();
+if(reciever){
+  alert(reciever);
+  $('#messages').append($('<li>').text($('#username').val()+":  "+$('#m').val()));
+  socket.emit("sendMsg",$('#username').val(),reciever, $('#m').val());
+}
+if(Sender)
+{
+  $('#messages').append($('<li>').text($('#username').val()+":  "+$('#m').val()));
+  socket.emit('sendToSender',$('#username').val(),Sender,$('#m').val());
+}
+ $('#m').val('');
+  return false;
+})
+socket.on('accepted',function(name){
+  alert("accepted");
+  $("#myModal").hide();
+  $("#chatBox").css('display','block');
+});
+socket.on('rejected',function(name){
+  alert('rejected');
+  $("#myModal").hide();
+});
+socket.on('recieveRequest',function(name){
+  n=name;
+  $("#requestModal").show();
+  $("#requestModal .modal-title").text(" "+name+"has sent you a request for chat");
+})
+$("#accept").click(function(){
+  $("#requestModal").hide();
+  $("#myModal").hide();
+  $("#chatBox").css('display','block');
+  socket.emit('acceptRequest',n);
+});
+$("#reject").click(function(){
+  $("#requestModal").hide();
+  $("#myModal").hide();
+  socket.emit('rejectRequest',n);
+});
+$("form").submit(function(){
+  var user={'username': $("#username").val(),'password': $("#password").val()};
+  socket.emit("loginCheck",user);
+  return false;
+})
+socket.on("fail",function(){
+  console.log("fail2");
+  window.location.href="/login";
+});
+socket.on("success",function(usersOnline){
+  user=usersOnline;
+  document.getElementById('id01').style.display='none';
+  document.getElementById('outer').style.display='block';
+  $("#usersOnline").text("");
+  for(var i=0;i<usersOnline.length;i++)
+  {
+    if(usersOnline[i]['name']!=$("#username").val())
+    $("#usersOnline").append("<li  id="+usersOnline[i]['id']+">"+usersOnline[i]['name']);
+  }
+});
+
+$(document.body).on('click','li',function(){
+ reciever=findById(this.id);
+  socket.emit('request',this.id,$("#username").val());
+});
+function findById(id)
+{
+  for(var i=0;i<user.length;i++)
+  {
+    if(user[i]['id']==id)
+    return user[i]['name'];
+  }
+}
+
+</script>
+
+
+
+</body>
+</html>
