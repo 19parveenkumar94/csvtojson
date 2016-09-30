@@ -1,0 +1,18 @@
+<html>
+<head>
+</head>
+<body>
+<form>
+<input type="file">
+<button>submit</button>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$('form').submit(function(){
+console.log($('input[type=file]').val());
+  return false;
+
+});
+</script>
+</body>
+</html>

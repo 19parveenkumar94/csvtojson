@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="app1" ng-cloak ng-init="person= {fName:'parveen',lName:'arya'}; capitals=[{city: 'jaipur', state:'rajasthan'},{city:'mumbai',state:'maharastra'}]">
+<head>
+  <link rel='stylesheet' type='text/css' href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- <link rel='stylesheet' type='text/css' href="./stylesheetscss/todo.css"> -->
+
+
+  <title>Tutorial</title>
+  <style>
+  [ng\:cloak],[ng-cloak], .ng-cloak{
+    display:none;
+  }
+  </style>
+</head>
+<body>
+<div ng-controller="ctrl1">
+  <input type="text" ng-model="first">
+  <input type="text" ng-model="second">
+  <button class="btn-primary" ng-click="updateValue()">calculation</button>
+  <h1>{{calculation}}</h1>
+  <p>{{first}}</p>
+  <p>{{second}}</p>
+<p>vaalue is <span data-ng-bind="second"></span></p>
+<ul class="unstyled">
+  <li ng-repeat="c in capitals">
+    <span data-ng-bind="c.city"></span>
+    <p>{{c.state}}</p>
+  </li>
+</ul>
+
+</div>
+<div ng-controller="ctrl2">firt random number:{{randomNum1}}</div>
+<div ng-controller="ctrl2">second random number:{{randomNum2}}</div>
+<div id="grocery" , ng-controller="gList">
+  <h3>{{groceries.length}}</h3>
+  <ul>
+    <li ng-repeat="x in groceries" ng-if='$index > 0'>
+      <input type="checkbox" ng-model="x.purchased" >
+      <span>{{x.item}}</span>
+    </li>
+  </ul>
+  <input type="text" ng-model="groceries[2].item">
+  <div ng-include="'groceriesul.html'">  </div>
+<input type="checkbox" ng-model="showList">
+<ng-include src="getList()"></ng-include>
+<input type="number" ng-model="checkNumber">
+<div ng-switch="checkNumber">
+  <p ng-switch-when="2">you entered 2</p>
+</div>
+<button ng-disabled="dd">disabled</button>
+<input type="checkbox" ng-model="dd">
+</div>
+
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./control/scope.js"></script>
+</body>
+</html>

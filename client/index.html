@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="app2" ng-cloak ng-init="person= {fName:'parveen',lName:'arya'}; capitals=[{city: 'jaipur', state:'rajasthan'},{city:'mumbai',state:'maharastra'}]">
+<head>
+  <link rel='stylesheet' type='text/css' href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- <link rel='stylesheet' type='text/css' href="./stylesheetscss/todo.css"> -->
+
+
+  <title>Tutorial</title>
+  <style>
+  [ng\:cloak],[ng-cloak], .ng-cloak{
+    display:none;
+  }
+  </style>
+</head>
+<body>
+
+<div ng-controller="mainCtrl">
+  <div ng-controller="subCtrl">
+    <p>{{title}}</p>
+    </div
+  <ul>
+    <li ng-repeat="x in movieList">
+      <p> title={{x.title}} name={{x.name}}</p>
+    </li>
+  </ul>
+
+    <span>Title: <input type="text" ng-model="movie.title" ng-blur="validate()"></span>
+    <span>Name: <input type="text" ng-model="movie.name"></span>
+    <input type="button" value="add" ng-click="addNew()" ng-show="isValid()">
+
+</div>
+<div ng-view>
+</div>
+
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="./control/nestedControl.js"></script>
+</body>
+</html>

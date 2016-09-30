@@ -1,0 +1,29 @@
+{
+  "name": "collaba",
+  "description": "chat application for social platforms",
+  "main": "index.html",
+  "keywords": [
+    "chat",
+    "collaba",
+    "index"
+  ],
+  "authors": [
+    "parveen"
+  ],
+  "license": "MIT",
+  "homepage": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "bootstrap": "^3.3.7",
+    "angular": "^1.5.8",
+    "angular-material": "^1.1.1",
+    "angular-route": "^1.5.8"
+  }
+}

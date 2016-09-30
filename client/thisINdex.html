@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="newApp">
+<head>
+  <link rel='stylesheet' type='text/css' href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel='stylesheet' type='text/css' href="./stylesheetscss/todo.css">
+
+
+  <title></title>
+</head>
+<body>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="./control/todo.js"></script>
+  <!-- <h1 class='well'>I am the first file.</h1>
+  <input type='text' ng-model='username' placeholder='see the magic'>
+  <h2>hi {{username}}</h2> -->
+  <div ng-controller="TodoCtrl as todoList">
+
+    <h3>total: {{todoList.totalTodos}}</h3>
+    <span>{{todoList.remaining()}} of {{todoList.todos.length}}</span>
+    <a ng-click="todoList.archive()">archive</a>
+    <ul class="unstyled">
+      <li ng-repeat='todo in todoList.todos'>
+        <label class="checkbox">
+        <input type='checkbox' ng-model='todo.done'>
+        <span class="done-{{todo.done}}">{{todo.text}}</span>
+      </label>
+      </li>
+    </ul>
+    <form ng-submit="todoList.addTo()">
+      <input type="text" ng-model="todoList.todoNext" placeholder="add new item here">
+      <input type="submit" value="add" class="btn-danger">
+    </form>
+  </div>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
