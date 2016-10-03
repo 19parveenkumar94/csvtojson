@@ -1,0 +1,25 @@
+
+<!-- //template for chat.html -->
+
+<div>
+<div layout="row">
+ <div flex="80">
+   <h1>Welcome {{username}}</h1>
+ </div>
+ <div flex="20" >
+   <div layout="column">
+     <div flex="30">
+       <h2>Avaliable Users</h2>
+     </div>
+     <div flex="70" ng-repeat="x in onlineUsers">
+       <md-button class="md-raised md-primary"  id='{{x.name}}' ng-click="requestForChat(x.name)">
+         {{x.name}}
+       </md-button>
+
+     </div>
+   <hr>
+   </div>
+
+ </div>
+</div>
+</div>

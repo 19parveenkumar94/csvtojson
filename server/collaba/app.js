@@ -43,6 +43,7 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, '../../client')));
+app.use(express.static(path.join(__dirname, '../../client/app')));
 app.use(function(req,res,next){
     req.db = db;
     next();
@@ -72,9 +73,10 @@ app.get('/check',auth.authenticate(),function(req,res){
 res.json(req.user.email);
 });
 app.post('/token',function(req,res){
-  var email1=req.body.email;
-  console.log(email1);
-  users.findOne({email:email1},function(err,user){
+  var userN=req.body.username;
+  var pass=req.body.password;
+  console.log(userN+" "+pass);
+  users.findOne({username: userN,password: pass},function(err,user){
     if ((err)) {
       console.log("fail");
       res.sendStatus(401);

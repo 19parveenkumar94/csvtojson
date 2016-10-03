@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html ng-app="collaba" ng-cloak >
+<head>
+  <base href="/"></base>
+  <link rel='stylesheet' type='text/css' href="bower_components/angular-material/angular-material.css">
+
+
+
+  <title>Angular Tutorial</title>
+  <style>
+  [ng\:cloak],[ng-cloak], .ng-cloak{
+    display:none;
+  }
+  </style>
+</head>
+<body>
+
+<!-- //header toolbar -->
+<md-toolbar>
+   <div class="md-toolbar-tools">
+     <md-button aria-label="Collaba" ng-href="#/">
+       Collaba
+     </md-button>
+     <h2>
+       <span>collaba chat app click login</span>
+     </h2>
+     <span flex=""></span>
+     <md-button class="md-raised" aria-label="login" ng-href="#/login" >
+       login
+     </md-button>
+     <md-button class="md-raised" aria-label="register" ng-href="#/register" >
+       register
+     </md-button>
+     <md-button class="md-raised" aria-label="about" ng-href="#/about">
+       about
+     </md-button>
+
+   </div>
+ </md-toolbar>
+<!-- //View where all templates will load -->
+<div ng-view>
+</div>
+<!-- inclusion of all js files in index.html -->
+  <script src='https://cdn.socket.io/socket.io-1.2.0.js'></script>
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+
+
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
+  <script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
+
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-messages/angular-messages.js"></script>
+
+  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="controller/controllers.js"></script>
+  <script type="text/javascript" src="services/registerService.js"></script>
+  <script type="text/javascript" src="services/loginService.js"></script>
+  <script type="text/javascript" src="services/socketFactory.js"></script>
+
+
+
+
+  <!-- <script type="text/javascript" src="./control/aboutControl.js"></script> -->
+
+</body>
+</html>

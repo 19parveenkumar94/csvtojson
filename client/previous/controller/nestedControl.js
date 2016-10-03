@@ -41,7 +41,7 @@
   app2.config(function($routeProvider,$locationProvider){
     $locationProvider.html5Mode(true);
     $routeProvider.when("/ab/:id",{
-      templateUrl : '/extras/about.html',
+      templateUrl : 'about.html',
       controller : 'aboutCtrl'
     });
   });
@@ -56,7 +56,7 @@
   angular.module('app2').factory('shows',function($http){
     return {
       load:function(){
-        return $http.get('/extras/document.json');
+        return $http.get('document.json');
       }
     }
   });

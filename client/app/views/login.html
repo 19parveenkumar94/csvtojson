@@ -1,0 +1,32 @@
+<md-content>
+<div layout="column" layout-align="space-between center">
+<form name="loginForm">
+
+
+  <div layout-gt-sm="row">
+    <md-input-container class="md-block" flex-gt-sm="">
+      <label>Username</label>
+      <input ng-model="user.username">
+    </md-input-container>
+
+  </div>
+
+
+  <div layout-gt-sm="row">
+    <md-input-container class="md-block" flex-gt-sm="">
+      <label>Password</label>
+      <input ng-model="user.password" type="password">
+    </md-input-container>
+
+
+  </div>
+  <md-button class="md-raised" aria-label="login"  ng-click="login()">
+    Login
+  </md-button>
+
+
+
+
+      </form>
+</div>
+</md-content>

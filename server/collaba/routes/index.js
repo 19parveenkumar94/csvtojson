@@ -50,17 +50,20 @@ router.get("/checkLogin",function(req,res,next){
 //
 // });
 router.post("/registerUser",function(req,res){
+  console.log("inside server");
 var login=new users({username:req.body.username,password:req.body.password,email:req.body.email});
 users.findOne({email:req.body.email},function(err,users){
   if(users)
   {
     console.log('here');
+    //res.status(200);
     res.redirect('/register');
   }
   else{
     login.save(function(err){
     if(err)
     return console.error(err);
+    //res.status(400);
     res.redirect("/login");
 
     });

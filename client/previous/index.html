@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="app2" ng-cloak ng-init="person= {fName:'parveen',lName:'arya'}; capitals=[{city: 'jaipur', state:'rajasthan'},{city:'mumbai',state:'maharastra'}]">
 <head>
+  <base href="/"></base>
   <link rel='stylesheet' type='text/css' href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- <link rel='stylesheet' type='text/css' href="./stylesheetscss/todo.css"> -->
 
@@ -13,13 +14,29 @@
   </style>
 </head>
 <body>
+  <div class="container">
+
+    <ul class="nav nav-tabs nav-justified">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="ab/34">about</a></li>
+
+    </ul>
+    <br>
+
+  </div>
 
 <div ng-controller="mainCtrl">
   <div ng-controller="subCtrl">
     <p>{{title}}</p>
-    </div
+  </div>
+search<input type="text" ng-model="query">
+<select ng-model="orderProp">
+  <option value="name">alpha</option>
+  <option value="age">newest</option>
+
+</select>
   <ul>
-    <li ng-repeat="x in movieList">
+    <li ng-repeat="x in movieList | filter:query | orderBy:orderProp">
       <p> title={{x.title}} name={{x.name}}</p>
     </li>
   </ul>
@@ -29,6 +46,7 @@
     <input type="button" value="add" ng-click="addNew()" ng-show="isValid()">
 
 </div>
+<a ng-href="ab/124">about</a>
 <div ng-view>
 </div>
 
@@ -36,6 +54,8 @@
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-    <script type="text/javascript" src="./control/nestedControl.js"></script>
+  <script type="text/javascript" src="controller/nestedControl.js"></script>
+  <!-- <script type="text/javascript" src="./control/aboutControl.js"></script> -->
+
 </body>
 </html>

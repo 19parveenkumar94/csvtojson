@@ -30,6 +30,46 @@ var server = http.createServer(app);
 var io=require('socket.io').listen(server);
 io.on('connection', function(socket){
 
+
+socket.on('login',function(user){
+  console.log(user);
+  var index=findInUserList(user);
+  if(index!=(-1))
+  {
+    console.log("present");
+  }
+  else {
+    usersOnline.push({'socket':socket,'id':socket.id,'name':user});
+    userlist.push({'id':socket.id,'name':user});
+    io.emit('updatedUserList',userlist);
+  }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   ss(socket).on('fileUpload', function(stream, data) {
       var filename = "public/images/"+path.basename(data.name);
       var x="/images/"+path.basename(data.name);
@@ -44,6 +84,7 @@ io.on('connection', function(socket){
     users[socket.id]=msg;
     io.emit('peoples',users);
   });
+
 
   socket.on('chat_message', function(msg){
     var message =new person({name:users[socket.id],message:msg});
