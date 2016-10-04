@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var users = require('../models/user');
+var auth = require("../auth.js")();
 /* GET home page. */
 // router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'Express' });
@@ -26,7 +27,7 @@ router.get("/",function(req,res,next){
   res.render('dummy');
 
 });
-router.get("/login",function(req,res,next){
+router.get("/login",auth.authenticate(),function(req,res,next){
   res.render("loginActual");
 
 });

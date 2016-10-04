@@ -32,7 +32,7 @@ io.on('connection', function(socket){
 
 
 socket.on('login',function(user){
-  console.log(user);
+  //console.log(user);
   var index=findInUserList(user);
   if(index!=(-1))
   {
@@ -46,6 +46,12 @@ socket.on('login',function(user){
 
 });
 
+socket.on('requestForChat',function(reciever,sender){
+  var ss=findWithName(reciever);
+//  console.log(ss);
+  ss.emit('recieveRequest',sender);
+
+});
 
 
 
@@ -56,11 +62,80 @@ socket.on('login',function(user){
 
 
 
+socket.on('acceptedRequest',function(name,sender){
+  var flag=0;
+  //console.log(name,sender);
+  personalChatData.findOne({user1:name,user2:sender},function(err,row){
+    if(row==null)
+    {
+      personalChatData.findOne({user1:sender,user2:name},function(err,row){
+        if(row!=null)
+        {
+          flag=1;
+        }
+        else {
+          var id=name+"-"+sender;
+          var personalChat=new personalChatData({chatId:id,user1:name,user2:sender});
+          console.log("database created for "+name+" "+sender);
+          personalChat.save(function(err){
+            if(err) return console.error(err);
+          });
+
+        }
+      });
+
+    }
+  });
 
 
 
 
+  var ss=findWithName(name);
+  ss.emit('accepted',sender);
+});
 
+
+
+socket.on('sendMessage',function(sender,reciever,msg){
+  console.log(sender+" "+reciever+" "+msg);
+  var flag=0;
+  personalChatData.findOne({user1:reciever,user2:sender},function(err,row){
+    if(row!=null)
+    {
+      flag=1;
+      row['chatMessages'].push({'sender':sender,'message':msg});
+      row.save(function(err){
+        if(err) return console.error(err);
+      });
+
+    }
+    else {
+      {
+        return console.error("not found");
+      }
+    }
+  });
+  if(flag==0)
+  {
+    personalChatData.findOne({user1:sender,user2:reciever},function(err,row){
+      if(row!=null)
+      {
+        flag=1;
+        row['chatMessages'].push({'sender':sender,'message':msg});
+        row.save(function(err){
+          if(err) return console.error(err);
+        })
+      }
+    });
+  }
+
+  var ss=findWithName(reciever);
+  if(ss)
+  {
+    console.log('found socket');
+  }
+  ss.emit('sendMessageToReciever',sender,msg);
+});
 
 
 
@@ -118,80 +193,10 @@ socket.on('login',function(user){
      });
 
   });
-  socket.on('acceptRequest',function(name,sender){
-    var flag=0;
-    console.log(name,sender);
-    personalChatData.findOne({user1:name,user2:sender},function(err,row){
-      if(row==null)
-      {
-        personalChatData.findOne({user1:sender,user2:name},function(err,row){
-          if(row!=null)
-          {
-            flag=1;
-          }
-          else {
-            var id=name+"-"+sender;
-            var personalChat=new personalChatData({chatId:id,user1:name,user2:sender});
-            console.log("database created for "+name+" "+sender);
-            personalChat.save(function(err){
-              if(err) return console.error(err);
-            });
 
-          }
-        });
-
-      }
-    });
-
-
-
-
-    var ss=findWithName(name);
-    ss.emit('accepted',sender);
-  });
   socket.on('sendToSender',function(sender,reciever,msg){
     var ss=findWithName(reciever);
     ss.emit('senderMsg',sender,msg);
-  });
-  socket.on('sendMsg',function(sender,reciever,msg){
-
-    var flag=0;
-    personalChatData.findOne({user1:reciever,user2:sender},function(err,row){
-      if(row!=null)
-      {
-        flag=1;
-        row['chatMessages'].push({'sender':sender,'message':msg});
-        row.save(function(err){
-          if(err) return console.error(err);
-        });
-
-      }
-      else {
-        {
-          return console.error("not found");
-        }
-      }
-    });
-    if(flag==0)
-    {
-      personalChatData.findOne({user1:sender,user2:reciever},function(err,row){
-        if(row!=null)
-        {
-          flag=1;
-          row['chatMessages'].push({'sender':sender,'message':msg});
-          row.save(function(err){
-            if(err) return console.error(err);
-          })
-        }
-      });
-    }
-
-    var ss=findWithName(reciever);
-    if(ss)
-    {
-      console.log('found socket');
-    }
-    ss.emit('sendToReciever',sender,msg);
   });
 
   socket.on('rejectRequest',function(name){

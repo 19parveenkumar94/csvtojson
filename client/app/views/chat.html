@@ -2,24 +2,59 @@
 <!-- //template for chat.html -->
 
 <div>
-<div layout="row">
- <div flex="80">
-   <h1>Welcome {{username}}</h1>
- </div>
- <div flex="20" >
-   <div layout="column">
-     <div flex="30">
-       <h2>Avaliable Users</h2>
-     </div>
-     <div flex="70" ng-repeat="x in onlineUsers">
-       <md-button class="md-raised md-primary"  id='{{x.name}}' ng-click="requestForChat(x.name)">
-         {{x.name}}
-       </md-button>
+  <div layout="row">
+    <div flex="80">
+      <h1>Welcome {{username}}</h1>
 
-     </div>
-   <hr>
-   </div>
+      <div ng-repeat="x in chats">
+        <md-card>
 
- </div>
-</div>
+          <md-card-content>
+            <h2>chat between {{x.sender}} and {{x.reciever}}</h2>
+            
+            <div ng-repeat="y in x.messages">
+              <p><b>{{y.sender}}</b> : {{y.message}}</p>
+            </div>
+          </md-card-content>
+          <div layout-gt-sm="row">
+            <md-input-container flex="80" class="md-block" flex-gt-sm="">
+              <label>enter Your Message</label>
+              <input id="textBox{{x.reciever}}">
+            </md-input-container>
+            <div flex="10">
+            </div>
+            <md-card-actions flex="10" layout="row" layout-align="end center">
+              <md-button class="md-raised" ng-click="sendMessage(x.sender,x.reciever)">send</md-button>
+            </md-card-actions>
+
+
+          </div>
+                  </md-card>
+      </div>
+
+    </div>
+    <div flex="20" >
+      <div layout="column">
+        <div flex="10">
+          <h2>Avaliable Users</h2>
+        </div>
+        <div flex="40" ng-repeat="x in onlineUsers">
+          <md-button class="md-raised md-primary"  id='{{x.name}}' ng-click="requestForChat(x.name)">
+            {{x.name}}
+          </md-button>
+
+        </div>
+        <div flex="10">Requests for chat</div>
+        <div flex="40" ng-repeat="x in requests">
+          <md-button class="md-raised md-primary"  id='{{x}}' ng-click="acceptRequest(x)">
+            {{x}}
+          </md-button>
+
+        </div>
+
+        <hr>
+      </div>
+
+    </div>
+  </div>
 </div>

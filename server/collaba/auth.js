@@ -13,6 +13,7 @@ module.exports = function() {
 var strategy = new Strategy(params, function(payload, done) {
 var user = users.findOne({email:payload.email},function(err,user){
   if (user) {
+
   return done(null, {email: user.email});
   } else {
   return done(new Error("User not found"), null);

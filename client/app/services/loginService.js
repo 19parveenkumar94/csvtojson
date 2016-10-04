@@ -1,5 +1,5 @@
 //service for login
-app.factory('loginService',function($http,$window){
+app.factory('loginService',function($http,$window,authorisation){
 
 
   return{
@@ -14,14 +14,17 @@ app.factory('loginService',function($http,$window){
           j = j.data.token;
           console.log(j);
           alert("success login");
-          var url="#/chat/"+user.username;
+          localStorage.setItem("token",j);
+
+
+          var url="#/chat";
           $window.location.href=url;
         },
         //failure
         function(data,status,config)
         {
-            alert("fail login");
-            $window.location.href="/#/login"
+          alert("fail login");
+          $window.location.href="/#/login"
         }
       );
     }

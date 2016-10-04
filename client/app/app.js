@@ -1,5 +1,5 @@
 //Main module with all the dependencies in the array
-var app=angular.module('collaba',['ngRoute','ngMaterial','btford.socket-io']);
+var app=angular.module('collaba',['ngRoute','ngMaterial','btford.socket-io','angular-jwt']);
 
 //Routes with their Url and controllers
 app.config(function($routeProvider){
@@ -18,7 +18,7 @@ app.config(function($routeProvider){
     templateUrl:'views/login.html',
     controller: 'loginCtrl'
   })
-  .when('/chat/:name',{
+  .when('/chat',{
     templateUrl:'views/chat.html',
     controller: 'chatCtrl'
   });

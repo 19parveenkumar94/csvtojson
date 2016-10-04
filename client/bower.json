@@ -25,6 +25,12 @@
     "angular": "^1.5.8",
     "angular-material": "^1.1.1",
     "angular-route": "^1.5.8",
-    "angular-socket-io": "^0.7.0"
+    "angular-socket-io": "^0.7.0",
+    "angular-local-storage": "^0.5.2",
+    "angularLocalStorage": "ngStorage#^0.3.2",
+    "angular-jwt": "^0.1.5"
+  },
+  "resolutions": {
+    "angular": "^1.5.8"
   }
 }

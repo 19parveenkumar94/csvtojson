@@ -70,7 +70,8 @@ app.get('/',function(req,res){
   res.json({status: "api is alive"});
 });
 app.get('/check',auth.authenticate(),function(req,res){
-res.json(req.user.email);
+res.send("success");
+console.log(req.user.email+"  yellow");
 });
 app.post('/token',function(req,res){
   var userN=req.body.username;
@@ -88,7 +89,7 @@ app.post('/token',function(req,res){
     }
     else{
       console.log("emil is:"+user.email);
-      var payload = {email:user.email};
+      var payload = {email:user.email,name:user.username};
       var token = jwt.encode(payload,'secret');
       res.json({token:token});
     }
